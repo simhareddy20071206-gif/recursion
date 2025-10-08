@@ -193,7 +193,209 @@ int fib(int n) {
 3. Dry-run using **recursion tree** or **stack trace**.
 4. If problem asks for “all combinations/permutations” → likely **recursion/backtracking**.
 5. Watch out for overlapping subproblems → use **memoization**.
+Here’s the **pseudocode** for the classic **“Print All Subsets of a Set”** problem using **recursion** 👇
 
 ---
+
+## 🧩 **Problem:**
+
+Given an array or string, print **all possible subsets** (the power set).
+
+---
+
+### **Idea (Recursion Logic)**
+
+At each index, you have **two choices**:
+
+1. **Include** the current element in the subset.
+2. **Exclude** the current element and move to the next.
+
+This naturally forms a recursion tree of size `2^n`.
+
+---
+
+### ✅ **Pseudocode**
+
+```text
+FUNCTION generateSubsets(arr, index, currentSubset):
+    IF index == length(arr):
+        PRINT currentSubset
+        RETURN
+
+    // Choice 1: Include current element
+    currentSubset.add(arr[index])
+    generateSubsets(arr, index + 1, currentSubset)
+
+    // Backtrack (remove last added element)
+    currentSubset.removeLast()
+
+    // Choice 2: Exclude current element
+    generateSubsets(arr, index + 1, currentSubset)
+```
+
+---
+
+### 📘 **Example Dry Run**
+
+Input: `arr = [1, 2]`
+
+**Recursion Tree:**
+
+```
+generate(0, []) 
+ ├─ Include 1 → generate(1, [1])
+ │    ├─ Include 2 → generate(2, [1,2]) → print [1,2]
+ │    └─ Exclude 2 → generate(2, [1]) → print [1]
+ └─ Exclude 1 → generate(1, [])
+      ├─ Include 2 → generate(2, [2]) → print [2]
+      └─ Exclude 2 → generate(2, []) → print []
+```
+
+**Output:**
+
+```
+[1, 2]
+[1]
+[2]
+[]
+```
+
+---
+
+### ⚙️ **Time and Space Complexity**
+
+| Type      | Complexity                                     |
+| --------- | ---------------------------------------------- |
+| **Time**  | O(2ⁿ) — every element can be included/excluded |
+| **Space** | O(n) — recursion stack depth                   |
+
+---
+
+Perfect — you’re now moving to **Subset II**, a slightly advanced version 👏
+
+---
+
+## 🧩 **Problem: Subsets II**
+
+You are given an array `nums` that **may contain duplicates**.
+Return **all possible subsets (the power set)**, ensuring that **no duplicate subsets** appear in the output.
+
+---
+
+### 🧠 **Example**
+
+**Input:**
+
+```
+nums = [1, 2, 2]
+```
+
+**All possible subsets (without duplicates):**
+
+```
+[]
+[1]
+[1,2]
+[1,2,2]
+[2]
+[2,2]
+```
+
+---
+
+## ⚙️ **Approach (Using Recursion + Backtracking)**
+
+1. **Sort the array** — this helps easily skip duplicates.
+2. At each recursive call:
+
+   * You can **choose** to include or exclude each element.
+3. **Skip duplicate elements** while exploring branches.
+
+---
+
+### ✅ **Pseudocode**
+
+```text
+FUNCTION subsetsWithDup(nums, index, currentSubset, result):
+    ADD currentSubset TO result
+
+    FOR i FROM index TO length(nums) - 1:
+        IF i > index AND nums[i] == nums[i-1]:
+            CONTINUE   // Skip duplicates
+
+        currentSubset.add(nums[i])
+        subsetsWithDup(nums, i + 1, currentSubset, result)
+        currentSubset.removeLast()  // Backtrack
+```
+
+---
+
+### ✅ **C++ Implementation**
+
+```cpp
+#include <iostream>
+#include <vector>
+#include <algorithm>
+using namespace std;
+
+void helper(vector<int>& nums, int index, vector<int>& subset, vector<vector<int>>& result) {
+    result.push_back(subset);
+
+    for (int i = index; i < nums.size(); i++) {
+        // Skip duplicates
+        if (i > index && nums[i] == nums[i - 1]) continue;
+
+        subset.push_back(nums[i]);
+        helper(nums, i + 1, subset, result);
+        subset.pop_back();  // Backtrack
+    }
+}
+
+vector<vector<int>> subsetsWithDup(vector<int>& nums) {
+    sort(nums.begin(), nums.end());   // Important for duplicate handling
+    vector<vector<int>> result;
+    vector<int> subset;
+    helper(nums, 0, subset, result);
+    return result;
+}
+
+int main() {
+    vector<int> nums = {1, 2, 2};
+    vector<vector<int>> result = subsetsWithDup(nums);
+
+    for (auto& subset : result) {
+        cout << "[ ";
+        for (int val : subset) cout << val << " ";
+        cout << "]" << endl;
+    }
+    return 0;
+}
+```
+
+---
+
+### 🧮 **Output**
+
+```
+[ ]
+[ 1 ]
+[ 1 2 ]
+[ 1 2 2 ]
+[ 2 ]
+[ 2 2 ]
+```
+
+---
+
+### ⏱ **Complexity**
+
+| Type      | Complexity                                        |
+| --------- | ------------------------------------------------- |
+| **Time**  | O(2ⁿ) (though reduced due to skipping duplicates) |
+| **Space** | O(n) recursion stack + O(2ⁿ) result storage       |
+
+---
+
+
 
 
