@@ -196,5 +196,4 @@ int fib(int n) {
 
 ---
 
-Would you like me to create **handwritten-style summary notes (PDF)** or a **mind map** for this recursion topic?
-I can generate either for easy revision.
+
